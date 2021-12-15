@@ -26,7 +26,7 @@
                             """,
   "depends"              :  [
                              'pos_kitchen_screen',
-                             'pos_restaurant'
+                             
                             ],
 
   "data"                 :  [
