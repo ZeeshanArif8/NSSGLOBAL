@@ -85,6 +85,10 @@
                     <field name="config_id"/>
 					<field name="out_of_stock_products" widget="many2many_tags" attrs="{'invisible':[('out_of_stock_products','=',[])]}"/>
 					<field name="cancellation_reason" attrs="{'invisible':[('cancellation_reason','=',False)]}"/>
+					<field name="invoice_link"/>
+					<field name="invoice_id"/>
+					<field name="payment_status"/>
+					<field name="is_link_sent"/>
                 </group>
                 <notebook colspan="4">
                     <page string="Products">

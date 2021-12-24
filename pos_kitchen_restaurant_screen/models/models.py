@@ -7,7 +7,7 @@
 #
 #################################################################################
 from odoo import api, fields, models,_
-from odoo.exceptions import ValidationError, Warning
+from odoo.exceptions import ValidationError, Warning, UserError
 from odoo.http import request
 from functools import partial
 import datetime
@@ -128,8 +128,10 @@ class PosKitchenOrder(models.Model):
 						vals['name'] = order.name
 						vals['amount_total'] = order.amount_total
 						vals['pos_reference'] = order.pos_reference
-						vals['table_id'] = [order.table_id.id,order.table_id.name]
-						vals['floor_id'] = [order.floor_id.id,order.floor_id.name]
+						# raise UserError(str(order.table_id))
+						if order.table_id or order.floor_id:
+							vals['table_id'] = [order.table_id.id,order.table_id.name]
+							vals['floor_id'] = [order.floor_id.id,order.floor_id.name]
 						vals['order_progress'] = order.order_progress
 						vals['date_order'] = order.date_order
 						vals['kitchen_order_name'] = order.kitchen_order_name
