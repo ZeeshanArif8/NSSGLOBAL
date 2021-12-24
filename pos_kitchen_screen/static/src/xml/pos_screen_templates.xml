@@ -523,8 +523,8 @@
 
     <t t-name="SendOrderButton" owl="1">
         <span class="control-button order-submit" t-att-class="addClasses">
-            <i class="fa fa-cutlery"></i>
-            Send Order
+            <!-- <i class="fa fa-cutlery"></i> -->
+            Post to MyFatoorah
         </span>
     </t>
 

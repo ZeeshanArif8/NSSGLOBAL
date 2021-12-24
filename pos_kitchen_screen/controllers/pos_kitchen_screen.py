@@ -106,7 +106,7 @@ class KitchenScreenBase(http.Controller):
         return order_data
 
     def extract_order_data(self,order,orders_list,pos_screen_data):
-
+        _logger.info("*************IN FUNCTION********")
         config_id = order.config_id
         pos_screen_data = pos_screen_data
         is_allowed_order = True
@@ -241,7 +241,7 @@ class KitchenScreenBase(http.Controller):
         updateTime = kw.get('updateTime')
         existing_orders = kw.get('existing_orders')
         pos_screen_data = request.env['pos.kitchen.screen.config'].sudo().browse(kw.get('id'))
-        domain = [('kitchen_order_name','!=',False),('order_progress','!=',False),('order_progress','=','new'),('id','not in',existing_orders),('date_order', '>=', datetime.date.today()),('config_id','in',pos_screen_data.pos_config_ids.ids)]
+        domain = [('kitchen_order_name','!=',False),('order_progress','!=',False),('payment_status','=','done'),('order_progress','=','new'),('id','not in',existing_orders),('date_order', '>=', datetime.date.today()),('config_id','in',pos_screen_data.pos_config_ids.ids)]
         pos_orders = request.env['pos.order'].sudo()
         restaurant_orders = request.env['pos.kitchen.order'].sudo()
         for config in pos_screen_data.pos_config_ids:
