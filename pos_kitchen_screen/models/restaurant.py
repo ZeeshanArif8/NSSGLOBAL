@@ -35,6 +35,11 @@ class PosKitchenOrder(models.Model):
 	lines = fields.One2many('pos.kitchen.orderline','order_id',string="kitchen Orderlines")
 	order_type = fields.Selection([('pos','Point Of Sale'),('kitchen','Kitchen')],string="Order Type")
 	is_kitchen_order = fields.Boolean(string="Is Kitchen Order")
+	invoice_link = fields.Char(string="Invoice Link")
+	invoice_id = fields.Char(string="Invoice ID")
+	payment_status = fields.Selection([('pending',"Payment Pending"),('done','Payment Done')],string="Payment Status",default="pending")
+	is_link_sent = fields.Boolean(string="Link Sent")
+
 
 
 class PosKitchenOrderLines(models.Model):
