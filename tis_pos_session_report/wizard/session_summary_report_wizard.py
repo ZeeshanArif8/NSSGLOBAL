@@ -34,7 +34,7 @@ class PosSession(models.Model):
         session_id = self.env['pos.session'].search([], order="stop_at desc", limit=1)
         # raise UserError(session_id)
         if session_id:
-            template_id = self.env['mail.template'].browse(13)
+            template_id = self.env['mail.template'].browse(32)
             auther = session_id.user_id.partner_id
             val = template_id.sudo().with_context(auther=auther).send_mail(session_id.id, force_send=True)
             # raise UserError(val)
