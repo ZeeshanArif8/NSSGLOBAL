@@ -524,10 +524,12 @@
 
 
     <t t-name="SendOrderButton" owl="1">
-        <span class="control-button order-submit" t-att-class="addClasses">
-            <!-- <i class="fa fa-cutlery"></i> -->
-            Post to MyFatoorah
-        </span>
+	    <t t-if="env.pos.config.company_id[1] == 'MEAT CLUB'">
+		<span class="control-button order-submit" t-att-class="addClasses">
+		    <!-- <i class="fa fa-cutlery"></i> -->
+		    Post to MyFatoorah
+		</span>
+	    </t>
     </t>
 
 
