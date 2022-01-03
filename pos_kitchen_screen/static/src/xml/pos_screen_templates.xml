@@ -67,9 +67,11 @@
 
 
     <t t-name="KitchenOrdersButton" owl="1">
-        <span class="control-button" id="kitchen_orders">
-            Show Kitchen Orders
-        </span>
+        <t t-if="env.pos.config.company_id[1] == 'MEAT CLUB'">
+            <span class="control-button" id="kitchen_orders">
+                Show Kitchen Orders
+            </span>
+        </t>
     </t>
 
 
