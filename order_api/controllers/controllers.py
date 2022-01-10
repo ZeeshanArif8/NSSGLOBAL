@@ -15,6 +15,7 @@ class OrderApi(http.Controller):
                     dict=json_string.get("params")
                     if dict:
                         order_lines=dict.get("order_lines")
+                        odoo_company = request.env['res.company'].sudo().search([('name', '=', dict.get('company'))])
                         odoo_customer = request.env['res.partner'].sudo().search([('name', '=', dict.get('customer')),('email', '=', dict.get('email'))])
                         odooCountry = request.env['res.country'].sudo().search([('name', '=', dict.get('country'))])
                         if not odooCountry:
@@ -34,7 +35,8 @@ class OrderApi(http.Controller):
                                 'phone': dict.get('phone'),
                                 'mobile': dict.get('mobile'),
                                 'website': dict.get('website'),
-                                'vat': dict.get('vat')
+                                'vat': dict.get('vat'),
+                                'company_id': odoo_company.id
                             })
 
                         line_vals = []
@@ -44,7 +46,8 @@ class OrderApi(http.Controller):
                                 product = request.env['product.product'].sudo().create({
                                     'name': line.get('product_id'),
                                     'list_price': line.get('price_unit'),
-                                    'type':'product'
+                                    'type':'product',
+                                    'company_id':odoo_company.id
                                 })
                             line_vals.append((0, 0, {
                                 'product_id': product.id,
@@ -56,15 +59,16 @@ class OrderApi(http.Controller):
                             'date_order': dict.get("date_order"),
                             'order_line': line_vals,
                             'state': 'draft',
-                            'origin': dict.get("origin")
+                            'origin': dict.get("origin"),
+                            'company_id': odoo_company.id
                         }
                         sale_order = request.env['sale.order'].sudo().create(vals)
                         args = {
                             "Success": "true",
-                            "Message": "Order is Created","ID": sale_order.id,
+                            "Message": "Order is Created","Company": sale_order.company_id.name,
                         }
                         data = json.dumps(args)
                         return data
         except Exception as e:
-
-            return e
+            print(e)
+            # return json.dumps(e)
