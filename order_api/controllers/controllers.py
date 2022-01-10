@@ -61,10 +61,10 @@ class OrderApi(http.Controller):
                         sale_order = request.env['sale.order'].sudo().create(vals)
                         args = {
                             "Success": "true",
-                            "Message": "Order is Created",
+                            "Message": "Order is Created","ID": sale_order.id,
                         }
                         data = json.dumps(args)
                         return data
         except Exception as e:
-            print(e)
-            # return json.dumps(e)
+
+            return e
