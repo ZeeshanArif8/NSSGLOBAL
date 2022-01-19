@@ -15,7 +15,6 @@ class OrderApi(http.Controller):
                     dict=json_string.get("params")
                     if dict:
                         order_lines=dict.get("order_lines")
-                        odoo_company = request.env['res.company'].sudo().search([('name', '=', dict.get('company'))])
                         odoo_customer = request.env['res.partner'].sudo().search([('name', '=', dict.get('customer')),('email', '=', dict.get('email'))])
                         odooCountry = request.env['res.country'].sudo().search([('name', '=', dict.get('country'))])
                         if not odooCountry:
@@ -35,8 +34,7 @@ class OrderApi(http.Controller):
                                 'phone': dict.get('phone'),
                                 'mobile': dict.get('mobile'),
                                 'website': dict.get('website'),
-                                'vat': dict.get('vat'),
-                                'company_id': odoo_company.id
+                                'vat': dict.get('vat')
                             })
 
                         line_vals = []
@@ -46,8 +44,7 @@ class OrderApi(http.Controller):
                                 product = request.env['product.product'].sudo().create({
                                     'name': line.get('product_id'),
                                     'list_price': line.get('price_unit'),
-                                    'type':'product',
-                                    'company_id':odoo_company.id
+                                    'type':'product'
                                 })
                             line_vals.append((0, 0, {
                                 'product_id': product.id,
@@ -59,16 +56,56 @@ class OrderApi(http.Controller):
                             'date_order': dict.get("date_order"),
                             'order_line': line_vals,
                             'state': 'draft',
-                            'origin': dict.get("origin"),
-                            'company_id': odoo_company.id
+                            'origin': dict.get("origin")
                         }
                         sale_order = request.env['sale.order'].sudo().create(vals)
                         args = {
                             "Success": "true",
-                            "Message": "Order is Created","Company": sale_order.company_id.name,
+                            "Message": "Order is Created",
                         }
                         data = json.dumps(args)
                         return data
         except Exception as e:
             print(e)
             # return json.dumps(e)
+
+    @http.route('/delivery_staus_api', type='json', methods=['POST'], auth="public", website="True")
+    def delivery_status_api(self, **kw):
+        try:
+            if request.jsonrequest:
+                string = json.dumps(request.jsonrequest)
+                json_string = json.loads(string)
+                if json_string:
+                    dict = json_string.get("params")
+
+                    if dict.get('delivery_status')=='delivered':
+                        odoo_order = request.env['pos.order'].sudo().search([("name","=",dict.get('order_no'))])
+                        if odoo_order:
+                            print(dict.get('delivery_status'))
+                            odoo_order.delivery_status='delivered'
+                            args = {
+                                "Success": "true",
+                                "Message": "Delivery Status updated to Delivered",
+                            }
+                            data = json.dumps(args)
+                            return data
+                    if dict.get('delivery_status') == 'ready':
+                        odoo_order = request.env['pos.order'].sudo().search([("name", "=", dict.get('order_no'))])
+                        if odoo_order:
+                            odoo_order.delivery_status = 'ready'
+                            print(dict.get('delivery_status'))
+                            args = {
+                                "Success": "true",
+                                "Message": "Delivery Status updated to Ready",
+                            }
+                            data = json.dumps(args)
+                            return data
+                    else:
+                        args = {
+                            "Success": "false",
+                            "Message": "Wrong Delivery Status",
+                        }
+                        data = json.dumps(args)
+                        return data
+        except Exception as e:
+            return e
