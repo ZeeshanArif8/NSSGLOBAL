@@ -68,3 +68,44 @@ class OrderApi(http.Controller):
         except Exception as e:
             print(e)
             # return json.dumps(e)
+
+    @http.route('/delivery_staus_api', type='json', methods=['POST'], auth="public", website="True")
+    def delivery_status_api(self, **kw):
+        try:
+            if request.jsonrequest:
+                string = json.dumps(request.jsonrequest)
+                json_string = json.loads(string)
+                if json_string:
+                    dict = json_string.get("params")
+
+                    if dict.get('delivery_status')=='delivered':
+                        odoo_order = request.env['pos.order'].sudo().search([("name","=",dict.get('order_no'))])
+                        if odoo_order:
+                            print(dict.get('delivery_status'))
+                            odoo_order.delivery_status='delivered'
+                            args = {
+                                "Success": "true",
+                                "Message": "Delivery Status updated to Delivered",
+                            }
+                            data = json.dumps(args)
+                            return data
+                    if dict.get('delivery_status') == 'ready':
+                        odoo_order = request.env['pos.order'].sudo().search([("name", "=", dict.get('order_no'))])
+                        if odoo_order:
+                            odoo_order.delivery_status = 'ready'
+                            print(dict.get('delivery_status'))
+                            args = {
+                                "Success": "true",
+                                "Message": "Delivery Status updated to Ready",
+                            }
+                            data = json.dumps(args)
+                            return data
+                    else:
+                        args = {
+                            "Success": "false",
+                            "Message": "Wrong Delivery Status",
+                        }
+                        data = json.dumps(args)
+                        return data
+        except Exception as e:
+            return e
